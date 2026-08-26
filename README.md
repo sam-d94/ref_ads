@@ -1,89 +1,103 @@
-# 브랜드 레퍼런스 통합 수집기
+# RefLens — 브랜드 광고 레퍼런스 인텔리전스
 
-건강기능식품 · 뷰티 미디어커머스 업계 전체의 광고/콘텐츠 레퍼런스를
-**API 키 없이**, 모든 플랫폼에서 **동시에** 수집합니다.
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![Platform](https://img.shields.io/badge/Platform-Windows-green)
 
-| 플랫폼 | 방식 | 로그인 | 안정성 |
-|---|---|---|---|
-| Meta Ad Library | Playwright + JSON 응답 가로채기 | 불필요 | 보통 |
-| Google Ads Transparency Center | Playwright + 네트워크 덤프(베스트 에포트) | 불필요 | 낮음~보통 |
-| YouTube / TikTok | yt-dlp | 불필요 | 좋음 |
-| Instagram / Facebook | Playwright + 세션 쿠키 | 필요 | 낮음 (기본 비활성) |
+> Meta 광고, Google 광고, YouTube, TikTok 크리에이티브를 자동 수집하고
+> **법인/모회사** 관점에서 브랜드 광고 전략을 분석하는 대시보드
+
+**GitHub**: https://github.com/sam-d94/ref_ads
+
+## 특징
+
+- **API 키 불필요** — Playwright, yt-dlp 기반 완전 자동 수집
+- **법인/모회사 계층** — CJ제일제당, LVMH, LG生活健康 등 법인별 브랜드 그룹핑
+- **6개 플랫폼** — Meta Ad Library, Google Ads Transparency, YouTube, TikTok, Instagram, Facebook
+- **피처링AI 스타일 UI** — 접이식 법인 섹션, 라디오형 칩 필터, 무한스크롤 갤러리
+- **실시간 대시보드** — KPI, 수집 추이 차트, 플랫폼 도넛, 브랜드 랭킹
 
 ## 설치
 
-```powershell
-cd C:\Users\qwer2\brand-ref-collector
-python -m pip install -r requirements.txt
-python -m playwright install chromium
+```bash
+pip install -r requirements.txt
+playwright install chromium
 ```
 
 ## 실행
 
-```powershell
-python main.py                              # 전체 브랜드 × 전체 플랫폼 동시 수집
-python main.py --platforms meta,youtube     # 플랫폼 선택
-python main.py --categories beauty          # 카테고리 선택 (health_food|beauty)
-python main.py --brand 올리브영              # 브랜드 1곳만
-python main.py --headed                     # 디버그: 브라우저 창 표시
+```bash
+# 전체 수집
+python main.py
+
+# 플랫폼/카테고리/브랜드 선택
+python main.py --platforms meta,youtube
+python main.py --categories beauty
+python main.py --brand 올리브영
+
+# 웹 대시보드 (http://127.0.0.1:7777)
+python -X utf8 webapp.py
 ```
 
-## 출력 구조
+## 아키텍처
 
 ```
-references/
-├── state.db                      # 중복 제거 상태 (SQLite)
-├── report_YYYY-MM-DD.md          # 신규 감지 아이템 리포트
-├── _debug/google/*.txt           # Google 응답 덤프 (스키마 튜닝용)
-├── _media/{브랜드}/youtube/*.jpg  # 썸네일 파일
-└── {카테고리}/{브랜드}/{플랫폼}/{날짜}/items.json
+brand-ref-collector/
+├── main.py                    # 비동기 수집 오케스트레이터
+├── webapp.py                  # Flask API 서버 + SPA
+├── static/index.html          # 피처링AI 스타일 SPA UI
+├── config/brands.yaml         # 22개 브랜드 + 법인 매핑
+├── collectors/
+│   ├── base.py                # Reference 데이터 모델
+│   ├── meta_adlibrary.py      # GraphQL 가로채기 수집
+│   ├── google_ads.py          # SearchCreatives RPC 가로채기
+│   ├── social_ytdlp.py        # yt-dlp 증분 수집
+│   └── meta_social.py         # Instagram/Facebook 세션
+├── storage/store.py           # SQLite 저장소 + 정규화
+└── tools/                     # 디버깅 도구
 ```
 
-매일 실행해도 `state.db` 기준으로 **새로 나온 것만** 리포트에 남습니다.
+## API
 
-## Instagram 활성화 (선택 — 계정 리스크 있음)
-
-```powershell
-python tools/save_ig_session.py     # 1회: 브라우저에서 직접 로그인 → 쿠키 저장
-# config/brands.yaml 에서 settings.instagram.enabled: true 로 변경
-```
-
-전용 계정 사용 + 하루 1회 이내 실행을 권장합니다.
-
-## 웹 뷰어 v2 — RefLens 대시보드
-
-```powershell
-python -X utf8 webapp.py            # http://127.0.0.1:7777 자동 열림
-python -X utf8 webapp.py --no-open  # 브라우저 자동 열림 끔
-```
-
-- **대시보드**: KPI(누적/오늘 신규/브랜드수/미디어보유율), 14일 수집 추이 차트,
-  플랫폼 도넛 분포, 브랜드 TOP10 랭킹, 최근 발견 카드
-- **레퍼런스 탐색**: 무한스크롤 갤러리 + 사이드바 다중 필터(카테고리/플랫폼/브랜드
-  체크박스) + 통합검색(`/` 단축키) + 정렬(발견/게시일/조회수/좋아요) + 미디어 보유만 토글
-- **상세 모달**: 원본 크리에이티브, 전체 카피 복사, 지표표, 집행플랫폼, 랜딩링크,
-  정합성 해시(content_hash)
-- **편의기능**: 필터 상태 URL 공유(#해시), 다크/라이트 테마 저장, 새 데이터 감지 알림,
-  **CSV 내보내기**(현재 필터 그대로, Excel 한글 BOM 지원)
-
-### 성능 설계
-| 항목 | 방식 |
+| 엔드포인트 | 설명 |
 |---|---|
-| 반복 수집 | 증분 수집 — 기수집 영상은 flat 목록만 확인(37초→2초), Meta 스크롤 조기종료 |
-| 웹 응답 | DB mtime 캐시 + lru 캐시(5.6초→27ms), SQLite WAL + 인덱스 |
-| 이미지 | 프록시 디스크 캐시(MISS→HIT), YouTube 썸네일 로컬 서빙 |
-| 정합성 | 저장 시 정규화(날짜/지표/URL) + content_hash + 재수집 시 payload 갱신 |
+| `GET /api/stats` | 대시보드 통계 (누적/오늘/플랫폼별/카테고리별) |
+| `GET /api/items` | 레퍼런스 목록 (필터/정렬/페이지네이션) |
+| `GET /api/item/<id>` | 상세 조회 |
+| `GET /api/brands` | 브랜드별 아이템 수 |
+| `GET /api/companies` | **법인/모회사** 목록 + 브랜드 매핑 |
+| `GET /api/export.csv` | CSV 내보내기 (Excel BOM) |
 
-## 유지보수 팁
+## 법인(모회사) 기능
 
-- **Meta**: UI 변경 시 `python tools/debug_meta.py "검색어"` 로 실제 응답을 덤프해 확인.
-- **Google**: `python tools/debug_google.py 도메인` 으로 RPC 스키마 확인 후
-  `google_ads.py` 의 `_harvest` 휴리스틱을 정밀화하세요.
-- **yt-dlp**: 주기적으로 `python -m pip install -U yt-dlp` 업데이트 필수.
+`config/brands.yaml`에 각 브랜드의 `company` 필드를 지정하면:
+- 대시보드에서 법인별로 브랜드를 그룹핑하여 표시
+- 법인별 필터로 특정 모회사 산하 브랜드만 탐색
+- CSV 내보내기 시 법인 컬럼 포함
+
+```yaml
+companies:
+  CJ올리브영: { label: CJ올리브영, en: OliveYoung }
+  LVMH: { label: LVMH, en: LVMH }
+
+categories:
+  beauty:
+    brands:
+      - name: 올리브영
+        company: CJ올리브영    # 법인 지정
+      - name: 닥터자르트
+        company: LVMH          # LVMH 산하
+```
+
+## 성능
+
+| 항목 | 개선 전 | 개선 후 |
+|---|---|---|
+| 유튜브 반복 수집 | 37초 | **2초** (증분) |
+| 웹 `/api/items` | 5.6초 | **27ms** (lru 캐시) |
+| 이미지 프록시 | 매 요청 CDN | 디스크 캐시 HIT |
+| Meta 스크롤 | 고정 8회 | 성장 정지 시 조기종료 |
 
 ## 주의
 
 - 각 플랫폼 약관상 무단 자동 수집은 회색지역입니다. 내부 리서치 용도·소규모로 사용하세요.
-- `config/brands.yaml`의 핸들/도메인은 예시값입니다. 실행 전 실제 값으로 수정하세요
-  (잘못된 핸들은 자동 스킵됩니다).
-- 대량·상업적 수집이 필요해지면 Apify 같은 관리형 서비스로 전환이 현실적입니다.
+- `config/brands.yaml`의 핸들/도메인은 예시값입니다. 실행 전 실제 값으로 수정하세요.
