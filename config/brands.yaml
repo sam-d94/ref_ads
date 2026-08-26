@@ -1,0 +1,233 @@
+# ============================================================
+# 브랜드 레퍼런스 수집 설정 — 미디어커머스 업계 (건기식 + 뷰티)
+# ------------------------------------------------------------
+# !! 핸들(handle)/도메인은 예시값입니다. 실행 전 실제 값을 확인해
+#    수정하세요. 존재하지 않는 핸들은 해당 브랜드에서 자동 스킵됩니다.
+# ============================================================
+
+settings:
+  out_root: references          # 결과 저장 루트
+  country: KR                   # Meta Ad Library 국가 필터
+  region: KR                    # Google Ads Transparency 지역
+  limits:
+    youtube: 30                 # 채널당 최근 영상 수
+    tiktok: 30
+  scrolls:
+    meta_adlibrary: 8           # 검색 결과 추가 로딩 스크롤 횟수
+    google_ads: 6
+    instagram: 4
+  concurrency:
+    playwright: 2               # 브라우저 동시 실행 수 (올릴수록 차단 위험↑)
+    ytdlp: 3
+  instagram:
+    enabled: false              # true로 켜기 전 README의 세션 저장 절차 필수!
+    state_file: config/ig_state.json
+  facebook:
+    enabled: false              # 실험적 기능 (계정 리스크 높음)
+    state_file: config/fb_state.json
+
+# company: 모회사/법인 — 브랜드 소속을 한눈에 파악
+# company_en: 영문 약어 (UI 축약 표시용)
+companies:
+  cj제일제당: { label: CJ제일제당, en: CJ }
+  일동제약: { label: 일동제약, en: 일동 }
+  오쏘몰: { label: 오쏘몰, en: Orthomol }
+  솔가: { label: 솔가코리아, en: Solgar }
+  프롬바이오: { label: 프롬바이오, en: FromBio }
+  CJ올리브영: { label: CJ올리브영, en: OliveYoung }
+  달바: { label: 달바, en: d'Alba }
+  토리든: { label: 토리든, en: Torriden }
+  라운드랩: { label: 라운드랩, en: ROUND LAB }
+  아누아: { label: 아누아, en: ANNUA }
+  멜릭서: { label: 멜릭서, en: MELIXIR }
+  더마토리: { label: 더마토리, en: DERMATORY }
+  필리밀리: { label: 필리밀리, en: FILLIMILLI }
+  메디힐: { label: 메디힐, en: MEDIHEAL }
+  LVMH: { label: LVMH, en: LVMH }
+  LG生活健康: { label: LG生活健康, en: LG H&H }
+  클리오: { label: 클리오, en: CLIO }
+
+categories:
+  health_food:
+    label: 건강기능식품
+    brands:
+      - name: 종근당건강
+        company: cj제일제당
+        aliases: [락토핏]
+        meta_keywords: [종근당건강, 락토핏]
+        google_domains: [ckdhealth.com]
+        youtube: ["@ckdhealth"]
+        tiktok: []
+        instagram: [ckdhealth]
+      - name: 슬로우알레
+        company: 슬로우알레
+        aliases: []
+        meta_keywords: [슬로우알레]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [slowale_official]
+      - name: 뉴트리디딧
+        company: 뉴트리디딧
+        aliases: [NutriD-Diet]
+        meta_keywords: [뉴트리디딧]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [nutri_ddiet]
+      - name: 헬민
+        company: 일동제약
+        aliases: [일동제약]
+        meta_keywords: [헬민]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [helmin_official]
+      - name: 오쏘몰코리아
+        company: 오쏘몰
+        aliases: [오쏘몰]
+        meta_keywords: [오쏘몰]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [orthomol.korea]
+      - name: 솔가코리아
+        company: 솔가
+        aliases: [솔가]
+        meta_keywords: [솔가]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [solgar.korea]
+      - name: 프롬바이오
+        company: 프롬바이오
+        aliases: [프롬비]
+        meta_keywords: [프롬비]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: []
+      - name: 세노비스
+        company: 바이엘
+        aliases: [바이엘]
+        meta_keywords: [세노비스]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: []
+
+  beauty:
+    label: 뷰티
+    brands:
+      - name: 올리브영
+        company: CJ올리브영
+        aliases: []
+        meta_keywords: [올리브영]
+        google_domains: [oliveyoung.co.kr]
+        youtube: ["@oliveyoungTV", "@oliveyoungglobal"]
+        tiktok: []
+        instagram: [official.oliveyoung]
+      - name: 달바
+        company: 달바
+        aliases: [dAlba]
+        meta_keywords: [달바]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [dalba_official]
+      - name: 토리든
+        company: 토리든
+        aliases: [torriden]
+        meta_keywords: [토리든]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [torriden_official]
+      - name: 라운드랩
+        company: 라운드랩
+        aliases: [ROUND LAB]
+        meta_keywords: [라운드랩]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [round_lab]
+      - name: 아누아
+        company: 아누아
+        aliases: [ANNUA]
+        meta_keywords: [아누아]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [annua.official]
+      - name: 멜릭서
+        company: 멜릭서
+        aliases: [MELIXIR]
+        meta_keywords: [멜릭서]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [melixir_official]
+      - name: 더마토리
+        company: 더마토리
+        aliases: [DERMATORY]
+        meta_keywords: [더마토리]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [dermatory_official]
+      - name: 넘버스인
+        company: 넘버스인
+        aliases: [NUMBERS IN]
+        meta_keywords: [넘버스인]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [numbers.in]
+      - name: 필리밀리
+        company: 필리밀리
+        aliases: [FILLIMILLI]
+        meta_keywords: [필리밀리]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [fillimilli_official]
+      - name: 메디힐
+        company: 메디힐
+        aliases: [MEDIHEAL]
+        meta_keywords: [메디힐]
+        google_domains: [mediheal.com]
+        youtube: []
+        tiktok: []
+        instagram: [mediheal_official]
+      - name: 닥터자르트
+        company: LVMH
+        aliases: [Dr.Jart+]
+        meta_keywords: [닥터자르트]
+        google_domains: [drjart.com]
+        youtube: []
+        tiktok: []
+        instagram: [drjart]
+      - name: 설화수
+        company: LVMH
+        aliases: [Sulwhasoo]
+        meta_keywords: [설화수]
+        google_domains: [sulwhasoo.com]
+        youtube: []
+        tiktok: []
+        instagram: [sulwhasoo.official]
+      - name: 라네즈
+        company: LG生活健康
+        aliases: [LANEIGE]
+        meta_keywords: [라네즈]
+        google_domains: [laneige.com]
+        youtube: []
+        tiktok: []
+        instagram: [laneige_kr]
+      - name: 클리오
+        company: 클리오
+        aliases: [CLIO]
+        meta_keywords: [클리오]
+        google_domains: []
+        youtube: []
+        tiktok: []
+        instagram: [clio_makeup]

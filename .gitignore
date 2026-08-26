@@ -1,0 +1,7 @@
+references/
+data/
+config/ig_state.json
+config/fb_state.json
+__pycache__/
+*.pyc
+web.pid
